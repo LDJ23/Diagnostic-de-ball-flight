@@ -1,0 +1,419 @@
+import React, { useMemo, useState } from "react";
+import { motion } from "framer-motion";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+
+const flights = [
+  { id: 1, label: "Pull Draw", start: [110, 250], c1: [85, 225], c2: [58, 190], end: [28, 198], textPos: [15, 188] },
+  { id: 2, label: "Pull", start: [110, 250], c1: [92, 212], c2: [62, 160], end: [38, 142], textPos: [22, 132] },
+  { id: 3, label: "Pull Fade", start: [110, 250], c1: [100, 210], c2: [88, 170], end: [80, 120], textPos: [68, 112] },
+  { id: 4, label: "Straight Draw", start: [110, 250], c1: [118, 205], c2: [88, 155], end: [70, 88], textPos: [58, 78] },
+  { id: 5, label: "Straight", start: [110, 250], c1: [110, 195], c2: [110, 135], end: [110, 62], textPos: [105, 42] },
+  { id: 6, label: "Straight Fade", start: [110, 250], c1: [110, 205], c2: [138, 155], end: [155, 88], textPos: [156, 78] },
+  { id: 7, label: "Push Draw", start: [110, 250], c1: [122, 210], c2: [140, 170], end: [150, 120], textPos: [150, 112] },
+  { id: 8, label: "Push", start: [110, 250], c1: [130, 215], c2: [162, 170], end: [188, 142], textPos: [198, 132] },
+  { id: 9, label: "Push Fade", start: [110, 250], c1: [135, 215], c2: [192, 192], end: [218, 198], textPos: [226, 188] },
+];
+
+const heightDescriptions = {
+  basse: "Trajectoire plus tendue, souvent avec moins de lancement ou trop de shaft lean.",
+  moyenne: "Fenêtre de vol intermédiaire, généralement la plus neutre pour l’analyse.",
+  haute: "Trajectoire plus élevée, souvent liée à plus de loft dynamique ou un contact plus sous la balle.",
+};
+
+const analysis = {
+  droitier: {
+    1: {
+      title: "Pull Draw",
+      ballStart: "La balle part à gauche de la cible puis revient vers la droite du joueur (draw pour droitier).",
+      likely: [
+        "Chemin de club très intérieur-vers-extérieur par rapport à la face, mais orientation initiale déjà à gauche.",
+        "Face fermée par rapport à la cible, mais légèrement ouverte par rapport au chemin.",
+        "Alignement du corps trop fermé ou épaules pointant à gauche.",
+      ],
+      fixes: [
+        "Vérifier l’alignement des épaules et des hanches.",
+        "Neutraliser le grip si les mains ferment trop vite la face.",
+        "Réduire l’exagération du chemin intérieur-vers-extérieur.",
+      ],
+    },
+    2: {
+      title: "Pull",
+      ballStart: "La balle part et reste à gauche.",
+      likely: [
+        "Face orientée à gauche de la cible à l’impact.",
+        "Chemin et face assez similaires, tous deux à gauche.",
+        "Épaules ouvertes ou downswing lancé avec le haut du corps.",
+      ],
+      fixes: [
+        "Vérifier l’alignement au départ.",
+        "Stabiliser la face à l’impact.",
+        "Éviter de lancer les épaules trop tôt en transition.",
+      ],
+    },
+    3: {
+      title: "Pull Fade",
+      ballStart: "La balle part à gauche puis s’éloigne encore plus à gauche au départ avant de couper vers la droite du joueur.",
+      likely: [
+        "Chemin extérieur-vers-intérieur avec face légèrement ouverte par rapport au chemin.",
+        "Contact talon possible, surtout si la courbe est marquée.",
+        "Posture ou épaules très ouvertes à l’adresse.",
+      ],
+      fixes: [
+        "Travailler un chemin plus neutre.",
+        "Éloigner légèrement la balle du corps si le talon entre trop en jeu.",
+        "Revoir la direction des épaules à l’adresse.",
+      ],
+    },
+    4: {
+      title: "Straight Draw",
+      ballStart: "La balle part proche de la cible puis tourne légèrement vers la gauche.",
+      likely: [
+        "Chemin légèrement intérieur-vers-extérieur.",
+        "Face proche de la cible mais un peu fermée par rapport au chemin.",
+        "Contact centré avec légère fermeture naturelle de la face.",
+      ],
+      fixes: [
+        "Souvent un bon vol de balle si c’est intentionnel.",
+        "Pour le rendre plus droit: réduire légèrement la fermeture de la face.",
+        "Conserver le même rythme et la même séquence.",
+      ],
+    },
+    5: {
+      title: "Straight",
+      ballStart: "La balle part sur la ligne cible et y reste.",
+      likely: [
+        "Face square à l’impact.",
+        "Chemin de club neutre ou très proche de la face.",
+        "Bon centrage de balle et bon contrôle du bas du swing.",
+      ],
+      fixes: [
+        "Rien de majeur à corriger.",
+        "Chercher surtout la répétabilité.",
+        "Surveiller que la hauteur reste adaptée au club utilisé.",
+      ],
+    },
+    6: {
+      title: "Straight Fade",
+      ballStart: "La balle part proche de la cible puis tourne légèrement vers la droite.",
+      likely: [
+        "Chemin légèrement extérieur-vers-intérieur.",
+        "Face proche de la cible mais un peu ouverte par rapport au chemin.",
+        "Contact un peu talon possible si la fade est accentuée.",
+      ],
+      fixes: [
+        "Très bon vol si c’est voulu.",
+        "Pour la redresser: chemin un peu moins à gauche et face un peu moins ouverte au chemin.",
+        "Vérifier la distance à la balle.",
+      ],
+    },
+    7: {
+      title: "Push Draw",
+      ballStart: "La balle part à droite puis revient vers la cible.",
+      likely: [
+        "Chemin intérieur-vers-extérieur.",
+        "Face orientée à droite de la cible mais fermée par rapport au chemin.",
+        "Corps possiblement trop fermé à l’adresse.",
+      ],
+      fixes: [
+        "Ouvrir légèrement l’alignement.",
+        "Rendre la face un peu moins orientée à droite à l’impact.",
+        "Conserver le chemin si ce vol est recherché comme stock shot.",
+      ],
+    },
+    8: {
+      title: "Push",
+      ballStart: "La balle part et reste à droite.",
+      likely: [
+        "Face pointant à droite à l’impact.",
+        "Chemin et face assez similaires, tous deux à droite.",
+        "Blocage des mains ou release tardif.",
+      ],
+      fixes: [
+        "Ramener la face plus square à l’impact.",
+        "Vérifier l’alignement du corps.",
+        "Éviter de retenir le release par peur du hook.",
+      ],
+    },
+    9: {
+      title: "Push Fade",
+      ballStart: "La balle part à droite et s’éloigne encore plus à droite.",
+      likely: [
+        "Face ouverte à la cible et encore plus ouverte que le chemin.",
+        "Chemin plutôt à droite ou neutre, combiné à une face trop ouverte.",
+        "Contact talon fréquent sur ce type de vol.",
+      ],
+      fixes: [
+        "Ramener la face moins ouverte.",
+        "Tester une position un peu plus proche pour éviter le talon.",
+        "Vérifier que le grip n’est pas trop faible.",
+      ],
+    },
+  },
+};
+
+function mirrorForLeftHanded(data) {
+  const remap = { 1: 9, 2: 8, 3: 7, 4: 6, 5: 5, 6: 4, 7: 3, 8: 2, 9: 1 };
+  const mirrored = {};
+  Object.entries(data.droitier).forEach(([key, value]) => {
+    mirrored[remap[Number(key)]] = {
+      ...value,
+      ballStart: value.ballStart
+        .replaceAll("gauche", "__TMP__")
+        .replaceAll("droite", "gauche")
+        .replaceAll("__TMP__", "droite")
+        .replaceAll("draw pour droitier", "draw pour gaucher"),
+    };
+  });
+  return mirrored;
+}
+
+analysis.gaucher = mirrorForLeftHanded(analysis);
+
+function getHeightAddOn(height, selectedFlight) {
+  const low = {
+    causes: [
+      "Loft dynamique réduit à l’impact.",
+      "Balle trop en arrière dans la stance.",
+      "Angle d’attaque trop descendant pour le club utilisé.",
+    ],
+    fixes: [
+      "Avancer légèrement la balle dans la stance.",
+      "Laisser un peu plus de loft dynamique à l’impact.",
+      "Vérifier que les mains ne sont pas excessivement en avant.",
+    ],
+  };
+
+  const mid = {
+    causes: [
+      "Hauteur généralement compatible avec un vol standard.",
+      "Le diagnostic se joue surtout sur la direction de départ et la courbe.",
+    ],
+    fixes: [
+      "Prioriser le contrôle face/chemin avant de modifier la hauteur.",
+    ],
+  };
+
+  const high = {
+    causes: [
+      "Loft dynamique élevé ou contact plus sous la balle.",
+      "Balle possiblement trop avancée dans la stance.",
+      "Vitesse ou spin trop élevés selon le club.",
+    ],
+    fixes: [
+      "Reculer légèrement la balle si approprié.",
+      "Contrôler le loft dynamique et la qualité de compression.",
+      "Évaluer si le manche ou le loft du club accentue trop la hauteur.",
+    ],
+  };
+
+  const map = { basse: low, moyenne: mid, haute: high };
+  const result = map[height];
+
+  if ([1, 9, 3, 7].includes(selectedFlight)) {
+    result.causes = [...result.causes, "Un effet latéral très marqué combiné à cette hauteur peut aussi indiquer un contact décentré."];
+    result.fixes = [...result.fixes, "Observer la trace d’impact sur la face pour confirmer le centrage."];
+  }
+
+  return result;
+}
+
+function FlightPath({ flight, active, onSelect, handedness }) {
+  const [sx, sy] = flight.start;
+  const [c1x, c1y] = flight.c1;
+  const [c2x, c2y] = flight.c2;
+  const [ex, ey] = flight.end;
+  const transform = handedness === "gaucher" ? "translate(240,0) scale(-1,1)" : undefined;
+
+  return (
+    <g transform={transform} className="cursor-pointer" onClick={() => onSelect(flight.id)}>
+      <path
+        d={`M ${sx} ${sy} C ${c1x} ${c1y}, ${c2x} ${c2y}, ${ex} ${ey}`}
+        fill="none"
+        stroke={active ? "#f97316" : "#fb7185"}
+        strokeWidth={active ? 8 : 6}
+        strokeLinecap="round"
+        className="transition-all duration-200"
+      />
+      <polygon
+        points={`${ex},${ey} ${ex - 8},${ey + 16} ${ex + 12},${ey + 8}`}
+        fill={active ? "#f97316" : "#fb7185"}
+      />
+    </g>
+  );
+}
+
+export default function BallFlightSelectorSite() {
+  const [selectedFlight, setSelectedFlight] = useState(5);
+  const [height, setHeight] = useState("moyenne");
+  const [handedness, setHandedness] = useState("droitier");
+
+  const selectedAnalysis = analysis[handedness][selectedFlight];
+  const heightAddOn = useMemo(() => getHeightAddOn(height, selectedFlight), [height, selectedFlight]);
+
+  return (
+    <div className="min-h-screen bg-slate-950 text-slate-100 p-6 md:p-10">
+      <div className="max-w-7xl mx-auto space-y-6">
+        <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}>
+          <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+            <div>
+              <h1 className="text-3xl md:text-5xl font-semibold tracking-tight">Ball Flight Selector</h1>
+              <p className="text-slate-300 mt-2 max-w-3xl text-base md:text-lg">
+                Sélectionne le vol de balle principal, la hauteur observée et le côté du joueur pour obtenir une explication simple des causes probables et des ajustements possibles.
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              <Badge variant="secondary" className="text-sm px-3 py-1 rounded-full bg-slate-800 text-slate-100">GitHub-ready</Badge>
+              <Badge variant="secondary" className="text-sm px-3 py-1 rounded-full bg-slate-800 text-slate-100">Responsive</Badge>
+              <Badge variant="secondary" className="text-sm px-3 py-1 rounded-full bg-slate-800 text-slate-100">Français</Badge>
+            </div>
+          </div>
+        </motion.div>
+
+        <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }} className="xl:col-span-2">
+            <Card className="bg-slate-900 border-slate-800 rounded-3xl shadow-2xl">
+              <CardHeader>
+                <CardTitle className="text-2xl">Sélection visuelle</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="flex flex-col lg:flex-row gap-3 lg:items-center lg:justify-between">
+                  <div>
+                    <p className="text-sm uppercase tracking-[0.2em] text-slate-400 mb-2">Joueur</p>
+                    <div className="flex gap-2">
+                      {[
+                        ["droitier", "Droitier"],
+                        ["gaucher", "Gaucher"],
+                      ].map(([value, label]) => (
+                        <Button
+                          key={value}
+                          variant={handedness === value ? "default" : "outline"}
+                          onClick={() => setHandedness(value)}
+                          className={`rounded-2xl ${handedness === value ? "bg-orange-500 hover:bg-orange-500 text-white" : "border-slate-700 bg-slate-900 text-slate-200 hover:bg-slate-800"}`}
+                        >
+                          {label}
+                        </Button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div>
+                    <p className="text-sm uppercase tracking-[0.2em] text-slate-400 mb-2">Hauteur</p>
+                    <div className="flex flex-wrap gap-2">
+                      {["basse", "moyenne", "haute"].map((value) => (
+                        <Button
+                          key={value}
+                          variant={height === value ? "default" : "outline"}
+                          onClick={() => setHeight(value)}
+                          className={`rounded-2xl capitalize ${height === value ? "bg-orange-500 hover:bg-orange-500 text-white" : "border-slate-700 bg-slate-900 text-slate-200 hover:bg-slate-800"}`}
+                        >
+                          {value}
+                        </Button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 lg:grid-cols-[1.2fr_0.8fr] gap-6 items-center">
+                  <div className="bg-black rounded-[2rem] p-4 md:p-6 border border-slate-800 overflow-hidden">
+                    <svg viewBox="0 0 240 280" className="w-full h-auto">
+                      {flights.map((flight) => (
+                        <FlightPath
+                          key={flight.id}
+                          flight={flight}
+                          active={selectedFlight === flight.id}
+                          onSelect={setSelectedFlight}
+                          handedness={handedness}
+                        />
+                      ))}
+
+                      <circle cx="110" cy="250" r="4.5" fill="#f5f5f4" />
+
+                      {flights.map((flight) => {
+                        const [x, y] = flight.textPos;
+                        const mirroredX = 240 - x;
+                        return (
+                          <text
+                            key={flight.id}
+                            x={handedness === "gaucher" ? mirroredX : x}
+                            y={y}
+                            fill={selectedFlight === flight.id ? "#f97316" : "#94a3b8"}
+                            fontSize="16"
+                            fontWeight="600"
+                            textAnchor="middle"
+                          >
+                            {flight.id}
+                          </text>
+                        );
+                      })}
+                    </svg>
+                  </div>
+
+                  <div className="space-y-3">
+                    {flights.map((flight) => (
+                      <button
+                        key={flight.id}
+                        onClick={() => setSelectedFlight(flight.id)}
+                        className={`w-full text-left rounded-2xl border px-4 py-3 transition-all ${selectedFlight === flight.id ? "border-orange-400 bg-orange-500/10" : "border-slate-800 bg-slate-950 hover:bg-slate-900"}`}
+                      >
+                        <div className="flex items-center justify-between gap-3">
+                          <span className="font-medium text-base">{flight.id} — {analysis[handedness][flight.id].title}</span>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
+
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
+            <Card className="bg-slate-900 border-slate-800 rounded-3xl shadow-2xl h-full">
+              <CardHeader>
+                <CardTitle className="text-2xl">Diagnostic</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-5">
+                <div>
+                  <p className="text-sm uppercase tracking-[0.2em] text-slate-400">Vol choisi</p>
+                  <h2 className="text-2xl font-semibold mt-1">{selectedAnalysis.title}</h2>
+                  <p className="text-slate-300 mt-2">{selectedAnalysis.ballStart}</p>
+                </div>
+
+                <div className="rounded-2xl bg-slate-950 border border-slate-800 p-4">
+                  <p className="text-sm uppercase tracking-[0.2em] text-slate-400 mb-2">Hauteur sélectionnée</p>
+                  <p className="text-slate-200 capitalize font-medium">{height}</p>
+                  <p className="text-slate-300 mt-2">{heightDescriptions[height]}</p>
+                </div>
+
+                <div>
+                  <h3 className="font-semibold text-lg mb-2">Causes les plus probables</h3>
+                  <ul className="space-y-2 text-slate-300 list-disc pl-5">
+                    {selectedAnalysis.likely.map((item) => (
+                      <li key={item}>{item}</li>
+                    ))}
+                    {heightAddOn.causes.map((item) => (
+                      <li key={item}>{item}</li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div>
+                  <h3 className="font-semibold text-lg mb-2">Ce qui pourrait être modifié</h3>
+                  <ul className="space-y-2 text-slate-300 list-disc pl-5">
+                    {selectedAnalysis.fixes.map((item) => (
+                      <li key={item}>{item}</li>
+                    ))}
+                    {heightAddOn.fixes.map((item) => (
+                      <li key={item}>{item}</li>
+                    ))}
+                  </ul>
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
+        </div>
+      </div>
+    </div>
+  );
+}
