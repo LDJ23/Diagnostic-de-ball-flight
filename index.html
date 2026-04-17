@@ -3,220 +3,205 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Diagnostic de Ball Flight</title>
+  <title>Ball Flight Selector</title>
   <style>
     * { box-sizing: border-box; }
 
     body {
       margin: 0;
       font-family: Arial, Helvetica, sans-serif;
-      background: #020617;
-      color: #e2e8f0;
+      background: #030b1a;
+      color: #eaf1ff;
     }
 
     .wrap {
-      max-width: 1220px;
+      max-width: 1280px;
       margin: 0 auto;
       padding: 24px;
     }
 
     h1 {
-      margin: 0 0 10px;
-      font-size: 2.1rem;
+      margin: 0 0 8px;
+      font-size: 2rem;
     }
 
     .subtitle {
-      color: #cbd5e1;
-      max-width: 920px;
-      line-height: 1.5;
-      margin-bottom: 10px;
-    }
-
-    .teaching-note {
-      color: #94a3b8;
-      font-size: 0.95rem;
-      margin-bottom: 24px;
+      margin: 0 0 24px;
+      color: #a9b8d3;
+      font-size: 1rem;
       line-height: 1.45;
     }
 
-    .grid {
+    .layout {
       display: grid;
-      grid-template-columns: 1.45fr 1fr;
+      grid-template-columns: 1.15fr 0.85fr;
       gap: 24px;
     }
 
     .card {
-      background: #0f172a;
-      border: 1px solid #1e293b;
+      background: #08152d;
+      border: 1px solid #1b2b4b;
       border-radius: 24px;
       padding: 20px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.25);
     }
 
-    .section-title {
-      margin: 0 0 16px;
-      font-size: 1.3rem;
+    .label {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: #8ea2c7;
+      margin-bottom: 10px;
     }
 
     .controls {
       display: flex;
-      flex-wrap: wrap;
       gap: 10px;
-      margin-bottom: 18px;
-    }
-
-    .control-group {
-      margin-bottom: 16px;
-    }
-
-    .label {
-      font-size: 0.85rem;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: #94a3b8;
-      margin-bottom: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
     }
 
     button {
-      border: 1px solid #334155;
-      background: #0b1220;
-      color: #e2e8f0;
-      padding: 10px 14px;
+      border: 1px solid #2c4068;
+      background: #071224;
+      color: #eef4ff;
+      padding: 10px 16px;
       border-radius: 14px;
       cursor: pointer;
+      font-size: 1rem;
       transition: 0.2s ease;
-      font-size: 0.95rem;
     }
 
     button:hover {
-      background: #172033;
+      background: #0c1b33;
     }
 
     button.active {
-      background: #f97316;
-      border-color: #f97316;
+      background: #ff7a18;
+      border-color: #ff7a18;
       color: white;
     }
 
-    .visual-row {
+    .left-grid {
       display: grid;
-      grid-template-columns: 1.2fr 0.8fr;
+      grid-template-columns: 1fr 0.7fr;
       gap: 18px;
       align-items: start;
     }
 
     .visual-box {
-      background: black;
-      border: 1px solid #1e293b;
-      border-radius: 28px;
+      background: #000;
+      border-radius: 24px;
       padding: 16px;
+      border: 1px solid #162541;
+      min-height: 560px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     svg {
       width: 100%;
       height: auto;
       display: block;
-    }
-
-    .flight-path {
-      fill: none;
-      stroke-width: 6;
-      stroke-linecap: round;
-      cursor: pointer;
-      transition: 0.2s ease;
-    }
-
-    .flight-path.active {
-      stroke-width: 8;
-      filter: drop-shadow(0 0 6px rgba(255,255,255,0.15));
-    }
-
-    .flight-arrow {
-      cursor: pointer;
-      transition: 0.2s ease;
-    }
-
-    .flight-number {
-      font-size: 17px;
-      font-weight: bold;
-      text-anchor: middle;
-      cursor: pointer;
-    }
-
-    .flight-number.active {
-      fill: #ffffff;
+      max-height: 520px;
     }
 
     .flight-list button {
       width: 100%;
       text-align: left;
       margin-bottom: 10px;
+      padding: 14px 16px;
       border-radius: 16px;
-      padding: 12px 14px;
-      line-height: 1.25;
+      font-size: 1rem;
     }
 
-    .note-box {
-      background: #020617;
-      border: 1px solid #1e293b;
-      border-radius: 18px;
-      padding: 14px;
-      margin: 16px 0;
+    .path {
+      fill: none;
+      stroke-width: 8;
+      stroke-linecap: round;
+      cursor: pointer;
+      transition: 0.2s ease;
     }
 
-    h2, h3 {
-      margin-top: 0;
+    .path.active {
+      stroke-width: 11;
+      filter: drop-shadow(0 0 8px rgba(255,255,255,0.15));
     }
 
-    ul {
-      padding-left: 20px;
-      line-height: 1.5;
-      margin-top: 8px;
+    .arrow {
+      cursor: pointer;
     }
 
-    li {
-      margin-bottom: 8px;
+    .num {
+      font-weight: bold;
+      font-size: 22px;
+      text-anchor: middle;
+      cursor: pointer;
     }
 
-    .mini-explainer {
-      background: #111827;
-      border: 1px solid #1f2937;
-      border-radius: 16px;
-      padding: 14px;
+    .mini-card {
+      background: #041022;
+      border: 1px solid #1a2a49;
+      border-radius: 20px;
+      padding: 16px;
       margin-bottom: 16px;
     }
 
-    .mini-explainer strong {
-      color: #f8fafc;
+    .shot-title {
+      font-size: 2rem;
+      font-weight: 700;
+      margin: 0 0 10px;
     }
 
-    .diagnostic-tags {
+    .shot-sub {
+      font-size: 1.1rem;
+      color: #c9d7f0;
+      line-height: 1.4;
+      margin-bottom: 14px;
+    }
+
+    .pill-row {
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
-      margin: 12px 0 16px;
+      margin-bottom: 8px;
     }
 
-    .tag {
-      font-size: 0.85rem;
+    .pill {
+      background: #1a2742;
+      border: 1px solid #31456f;
+      color: #eef4ff;
       border-radius: 999px;
-      padding: 7px 10px;
-      background: #1e293b;
-      color: #e2e8f0;
-      border: 1px solid #334155;
+      padding: 8px 12px;
+      font-size: 0.95rem;
     }
 
-    .footer-note {
+    .big-line {
+      font-size: 1.2rem;
+      line-height: 1.45;
+      margin: 0;
+    }
+
+    .accent {
+      color: #ffb16a;
+      font-weight: 700;
+    }
+
+    .small-note {
+      color: #90a4c9;
+      font-size: 0.95rem;
+      line-height: 1.45;
       margin-top: 12px;
-      color: #94a3b8;
-      font-size: 0.9rem;
-      line-height: 1.4;
     }
 
-    @media (max-width: 900px) {
-      .grid,
-      .visual-row {
+    @media (max-width: 980px) {
+      .layout,
+      .left-grid {
         grid-template-columns: 1fr;
+      }
+
+      .visual-box {
+        min-height: 420px;
       }
     }
   </style>
@@ -224,39 +209,28 @@
 <body>
   <div class="wrap">
     <h1>Ball Flight Selector</h1>
-    <p class="subtitle">
-      Sélectionne le vol de balle principal, la hauteur observée et le côté du joueur pour obtenir une explication simple des causes probables et des ajustements possibles.
-    </p>
-    <p class="teaching-note">
-      Rappel pédagogique : la <strong>direction de départ</strong> est principalement liée à la <strong>face</strong>, tandis que la <strong>courbure</strong> est principalement liée à la relation entre <strong>face</strong> et <strong>chemin</strong>.
-    </p>
+    <p class="subtitle">Choisis le vol de balle, la hauteur et le côté du joueur. Le diagnostic reste volontairement court et lisible.</p>
 
-    <div class="grid">
+    <div class="layout">
       <div class="card">
-        <h2 class="section-title">Sélection visuelle</h2>
-
-        <div class="control-group">
-          <div class="label">Joueur</div>
-          <div class="controls" id="handednessButtons">
-            <button data-hand="droitier" class="active">Droitier</button>
-            <button data-hand="gaucher">Gaucher</button>
-          </div>
+        <div class="label">Joueur</div>
+        <div class="controls" id="handButtons">
+          <button data-hand="droitier" class="active">Droitier</button>
+          <button data-hand="gaucher">Gaucher</button>
         </div>
 
-        <div class="control-group">
-          <div class="label">Hauteur</div>
-          <div class="controls" id="heightButtons">
-            <button data-height="basse">Basse</button>
-            <button data-height="moyenne" class="active">Moyenne</button>
-            <button data-height="haute">Haute</button>
-          </div>
+        <div class="label">Hauteur</div>
+        <div class="controls" id="heightButtons">
+          <button data-height="basse">Basse</button>
+          <button data-height="moyenne" class="active">Moyenne</button>
+          <button data-height="haute">Haute</button>
         </div>
 
-        <div class="visual-row">
+        <div class="left-grid">
           <div class="visual-box">
-            <svg viewBox="0 0 240 280" id="flightSvg">
+            <svg viewBox="0 0 320 420">
               <g id="flightGroup"></g>
-              <circle cx="110" cy="250" r="4.5" fill="#f8fafc"></circle>
+              <circle cx="160" cy="350" r="7" fill="#f5f7ff"></circle>
             </svg>
           </div>
 
@@ -265,39 +239,30 @@
       </div>
 
       <div class="card">
-        <h2 class="section-title">Diagnostic</h2>
+        <div class="label">Vol choisi</div>
+        <div class="shot-title" id="shotTitle">Straight</div>
+        <div class="shot-sub" id="shotDesc">La balle part sur la cible et reste neutre.</div>
 
-        <div class="mini-explainer">
-          <strong>Lecture rapide :</strong><br>
-          Face = direction de départ dominante.<br>
-          Face vs chemin = sens de la courbure.
+        <div class="pill-row" id="pillRow"></div>
+
+        <div class="mini-card">
+          <div class="label">Cause probable</div>
+          <p class="big-line" id="causeLine"></p>
         </div>
 
-        <div>
-          <div class="label">Vol choisi</div>
-          <h3 id="shotTitle">Straight</h3>
-          <p id="shotDescription"></p>
-          <div class="diagnostic-tags" id="diagnosticTags"></div>
+        <div class="mini-card">
+          <div class="label">Ajustement clé</div>
+          <p class="big-line" id="fixLine"></p>
         </div>
 
-        <div class="note-box">
-          <div class="label">Hauteur sélectionnée</div>
-          <p id="heightTitle" style="margin:0 0 8px; font-weight:bold;">Moyenne</p>
-          <p id="heightDescription" style="margin:0;"></p>
+        <div class="mini-card">
+          <div class="label">Hauteur</div>
+          <p class="big-line" id="heightLine"></p>
         </div>
 
-        <div>
-          <h3>Causes les plus probables</h3>
-          <ul id="causesList"></ul>
-        </div>
-
-        <div>
-          <h3>Ce qui pourrait être modifié</h3>
-          <ul id="fixesList"></ul>
-        </div>
-
-        <p class="footer-note">
-          Ce diagnostic donne les causes les plus probables, mais un contact décentré, le club utilisé, la vitesse, le loft dynamique et le spin peuvent aussi influencer le résultat final.
+        <p class="small-note">
+          Raccourci utile : <span class="accent">la face influence surtout le départ</span>,
+          et <span class="accent">la relation face/chemin influence surtout la courbure</span>.
         </p>
       </div>
     </div>
@@ -305,322 +270,184 @@
 
   <script>
     const flights = [
-      { id: 1, label: "Pull Draw", start: [110,250], c1: [96,210], c2: [72,175], end: [42,150], textPos: [32,144], color: "#ff3b30" },
-      { id: 2, label: "Pull", start: [110,250], c1: [100,210], c2: [84,165], end: [72,118], textPos: [66,110], color: "#ff3b30" },
-      { id: 3, label: "Pull Fade", start: [110,250], c1: [103,210], c2: [100,165], end: [102,92], textPos: [98,84], color: "#ff3b30" },
+      { id: 1, label: "Pull Draw", start: [160,350], c1: [138,300], c2: [102,250], end: [58,212], textPos: [42,204], color: "#ff3b30" },
+      { id: 2, label: "Pull", start: [160,350], c1: [144,298], c2: [120,242], end: [94,160], textPos: [84,148], color: "#ff3b30" },
+      { id: 3, label: "Pull Fade", start: [160,350], c1: [150,298], c2: [145,238], end: [152,112], textPos: [144,98], color: "#ff3b30" },
 
-      { id: 4, label: "Straight Draw", start: [110,250], c1: [112,210], c2: [88,168], end: [80,88], textPos: [74,80], color: "#32cd32" },
-      { id: 5, label: "Straight", start: [110,250], c1: [110,205], c2: [110,150], end: [110,72], textPos: [110,64], color: "#32cd32" },
-      { id: 6, label: "Straight Fade", start: [110,250], c1: [108,210], c2: [132,168], end: [140,88], textPos: [146,80], color: "#32cd32" },
+      { id: 4, label: "Straight Draw", start: [160,350], c1: [162,300], c2: [128,242], end: [112,108], textPos: [102,92], color: "#31d843" },
+      { id: 5, label: "Straight", start: [160,350], c1: [160,295], c2: [160,225], end: [160,82], textPos: [160,64], color: "#31d843" },
+      { id: 6, label: "Straight Fade", start: [160,350], c1: [158,300], c2: [192,242], end: [208,108], textPos: [218,92], color: "#31d843" },
 
-      { id: 7, label: "Push Draw", start: [110,250], c1: [118,210], c2: [120,165], end: [118,92], textPos: [126,84], color: "#2f49ff" },
-      { id: 8, label: "Push", start: [110,250], c1: [122,210], c2: [138,165], end: [154,118], textPos: [162,110], color: "#2f49ff" },
-      { id: 9, label: "Push Fade", start: [110,250], c1: [124,210], c2: [150,175], end: [186,150], textPos: [196,144], color: "#2f49ff" }
+      { id: 7, label: "Push Draw", start: [160,350], c1: [172,298], c2: [175,238], end: [168,112], textPos: [178,98], color: "#304cff" },
+      { id: 8, label: "Push", start: [160,350], c1: [176,298], c2: [200,242], end: [226,160], textPos: [236,148], color: "#304cff" },
+      { id: 9, label: "Push Fade", start: [160,350], c1: [182,300], c2: [218,250], end: [262,212], textPos: [278,204], color: "#304cff" }
     ];
 
-    const heightDescriptions = {
-      basse: "Trajectoire plus tendue, souvent avec moins de lancement, moins de loft dynamique, ou une balle placée trop arrière.",
-      moyenne: "Fenêtre de vol intermédiaire, généralement la plus neutre pour analyser surtout la direction de départ et la courbure.",
-      haute: "Trajectoire plus élevée, souvent liée à plus de loft dynamique, une balle plus avancée, ou un contact plus sous la balle."
-    };
-
-    const rightHandedAnalysis = {
+    const dataRight = {
       1: {
         title: "Pull Draw",
-        ballStart: "La balle part à gauche de la cible et courbe encore vers la gauche.",
-        tags: ["Face à gauche", "Face fermée au chemin", "Courbure draw/hook"],
-        likely: [
-          "Face orientée à gauche de la cible à l’impact.",
-          "Face fermée par rapport au chemin.",
-          "Chemin plus à droite que la face, mais souvent encore à gauche de la cible."
-        ],
-        fixes: [
-          "Ramener la face un peu moins fermée à l’impact.",
-          "Vérifier si le grip est trop fort.",
-          "Neutraliser légèrement le différentiel face/chemin."
-        ]
+        desc: "La balle part à gauche et tourne encore à gauche.",
+        pills: ["Face à gauche", "Face fermée au chemin"],
+        cause: "Face trop à gauche et trop fermée par rapport au chemin.",
+        fix: "Ramener la face moins fermée à l’impact."
       },
       2: {
         title: "Pull",
-        ballStart: "La balle part à gauche et reste assez droite.",
-        tags: ["Face à gauche", "Chemin proche de la face", "Peu de courbure"],
-        likely: [
-          "Face pointant à gauche de la cible.",
-          "Chemin très proche de la face.",
-          "Épaules ou alignement possiblement trop ouverts."
-        ],
-        fixes: [
-          "Vérifier l’alignement des pieds, hanches et épaules.",
-          "Ramener face et chemin plus près de la cible.",
-          "Éviter de lancer le haut du corps trop tôt."
-        ]
+        desc: "La balle part à gauche et reste assez droite.",
+        pills: ["Face à gauche", "Chemin proche"],
+        cause: "Face et chemin sont tous les deux orientés à gauche.",
+        fix: "Ramener face et chemin plus près de la cible."
       },
       3: {
         title: "Pull Fade",
-        ballStart: "La balle part à gauche puis courbe vers la droite.",
-        tags: ["Face à gauche", "Face ouverte au chemin", "Courbure fade/slice"],
-        likely: [
-          "Face orientée à gauche de la cible.",
-          "Face ouverte par rapport au chemin.",
-          "Chemin encore plus à gauche que la face."
-        ],
-        fixes: [
-          "Réduire le chemin extérieur-vers-intérieur.",
-          "Stabiliser la face pour qu’elle ne soit pas trop ouverte au chemin.",
-          "Vérifier la posture et la direction des épaules."
-        ]
+        desc: "La balle part à gauche puis tourne vers la droite.",
+        pills: ["Face à gauche", "Face ouverte au chemin"],
+        cause: "Face à gauche, mais ouverte par rapport au chemin.",
+        fix: "Réduire le chemin extérieur-intérieur."
       },
       4: {
         title: "Straight Draw",
-        ballStart: "La balle part près de la cible puis courbe vers la gauche.",
-        tags: ["Face près de la cible", "Face fermée au chemin", "Draw contrôlé"],
-        likely: [
-          "Face proche de la cible à l’impact.",
-          "Face fermée par rapport au chemin.",
-          "Chemin légèrement vers la droite de la face."
-        ],
-        fixes: [
-          "Très bon vol si intentionnel.",
-          "Pour la redresser, réduire légèrement la fermeture de face relative au chemin.",
-          "Conserver le même rythme si c’est ton shot préféré."
-        ]
+        desc: "La balle part près de la cible puis tourne à gauche.",
+        pills: ["Face près de la cible", "Draw contrôlé"],
+        cause: "Face presque square, mais fermée par rapport au chemin.",
+        fix: "Réduire légèrement la fermeture relative de la face."
       },
       5: {
         title: "Straight",
-        ballStart: "La balle part sur la ligne cible et y reste.",
-        tags: ["Face square", "Chemin neutre", "Vol neutre"],
-        likely: [
-          "Face square à l’impact.",
-          "Chemin très proche de la face.",
-          "Bon centrage et bon contrôle du bas du swing."
-        ],
-        fixes: [
-          "Rien de majeur à corriger.",
-          "Chercher surtout la répétabilité.",
-          "Valider que la hauteur et le spin restent adaptés au club."
-        ]
+        desc: "La balle part sur la cible et reste neutre.",
+        pills: ["Face square", "Chemin neutre"],
+        cause: "Face et chemin sont presque alignés sur la cible.",
+        fix: "Rien de majeur : viser la répétabilité."
       },
       6: {
         title: "Straight Fade",
-        ballStart: "La balle part près de la cible puis courbe vers la droite.",
-        tags: ["Face près de la cible", "Face ouverte au chemin", "Fade contrôlée"],
-        likely: [
-          "Face proche de la cible à l’impact.",
-          "Face ouverte par rapport au chemin.",
-          "Chemin légèrement plus à gauche que la face."
-        ],
-        fixes: [
-          "Très bon vol si intentionnel.",
-          "Pour la redresser, réduire l’ouverture de face relative au chemin.",
-          "Vérifier aussi le centrage si la fade devient trop marquée."
-        ]
+        desc: "La balle part près de la cible puis tourne à droite.",
+        pills: ["Face près de la cible", "Fade contrôlée"],
+        cause: "Face presque square, mais ouverte par rapport au chemin.",
+        fix: "Réduire légèrement l’ouverture relative de la face."
       },
       7: {
         title: "Push Draw",
-        ballStart: "La balle part à droite puis revient vers la gauche.",
-        tags: ["Face à droite", "Face fermée au chemin", "Draw de retour"],
-        likely: [
-          "Face orientée à droite de la cible.",
-          "Face fermée par rapport au chemin.",
-          "Chemin encore plus à droite que la face."
-        ],
-        fixes: [
-          "Ramener la face un peu moins à droite à l’impact.",
-          "Réduire l’écart entre face et chemin.",
-          "Vérifier si le corps est trop fermé à l’adresse."
-        ]
+        desc: "La balle part à droite puis revient à gauche.",
+        pills: ["Face à droite", "Face fermée au chemin"],
+        cause: "Face à droite, mais fermée par rapport à un chemin encore plus à droite.",
+        fix: "Ramener la face un peu moins à droite."
       },
       8: {
         title: "Push",
-        ballStart: "La balle part à droite et reste assez droite.",
-        tags: ["Face à droite", "Chemin proche de la face", "Peu de courbure"],
-        likely: [
-          "Face pointant à droite de la cible.",
-          "Chemin très proche de la face.",
-          "Blocage du release ou face laissée ouverte vers la cible."
-        ],
-        fixes: [
-          "Ramener face et chemin plus près de la cible.",
-          "Vérifier l’alignement général.",
-          "Éviter de retenir les mains à l’impact."
-        ]
+        desc: "La balle part à droite et reste assez droite.",
+        pills: ["Face à droite", "Chemin proche"],
+        cause: "Face et chemin sont tous les deux orientés à droite.",
+        fix: "Ramener face et chemin plus près de la cible."
       },
       9: {
         title: "Push Fade",
-        ballStart: "La balle part à droite et courbe encore vers la droite.",
-        tags: ["Face à droite", "Face ouverte au chemin", "Courbure fade/slice"],
-        likely: [
-          "Face orientée à droite de la cible.",
-          "Face ouverte par rapport au chemin.",
-          "Chemin un peu moins à droite que la face, ou proche de la cible."
-        ],
-        fixes: [
-          "Ramener la face moins ouverte à l’impact.",
-          "Réduire l’écart face/chemin.",
-          "Vérifier le grip et la stabilité de la face au contact."
-        ]
+        desc: "La balle part à droite et tourne encore à droite.",
+        pills: ["Face à droite", "Face ouverte au chemin"],
+        cause: "Face à droite et encore trop ouverte par rapport au chemin.",
+        fix: "Ramener la face moins ouverte à l’impact."
       }
     };
 
-    function swapLeftRight(text) {
+    const heightInfo = {
+      basse: "Basse : souvent moins de loft dynamique ou balle trop arrière.",
+      moyenne: "Moyenne : hauteur neutre, idéale pour lire départ et courbure.",
+      haute: "Haute : souvent plus de loft dynamique ou balle plus avancée."
+    };
+
+    function swapLR(text) {
       return text
-        .replaceAll("gauche", "__TMP__")
+        .replaceAll("gauche", "__tmp__")
         .replaceAll("droite", "gauche")
-        .replaceAll("__TMP__", "droite");
+        .replaceAll("__tmp__", "droite");
     }
 
-    function buildLeftHandedAnalysis(data) {
-      const remap = { 1: 9, 2: 8, 3: 7, 4: 6, 5: 5, 6: 4, 7: 3, 8: 2, 9: 1 };
+    function buildLeftData(src) {
+      const remap = {1:9, 2:8, 3:7, 4:6, 5:5, 6:4, 7:3, 8:2, 9:1};
       const out = {};
-
-      Object.keys(data).forEach(key => {
-        const item = data[key];
-        out[remap[key]] = {
-          title: item.title,
-          ballStart: swapLeftRight(item.ballStart),
-          tags: item.tags.map(swapLeftRight),
-          likely: item.likely.map(swapLeftRight),
-          fixes: item.fixes.map(swapLeftRight)
+      Object.keys(src).forEach(k => {
+        const v = src[k];
+        out[remap[k]] = {
+          title: v.title,
+          desc: swapLR(v.desc),
+          pills: v.pills.map(swapLR),
+          cause: swapLR(v.cause),
+          fix: swapLR(v.fix)
         };
       });
-
       return out;
     }
 
-    const analysis = {
-      droitier: rightHandedAnalysis,
-      gaucher: buildLeftHandedAnalysis(rightHandedAnalysis)
+    const data = {
+      droitier: dataRight,
+      gaucher: buildLeftData(dataRight)
     };
 
     let selectedFlight = 5;
     let selectedHeight = "moyenne";
     let selectedHand = "droitier";
 
-    function getHeightAddOn(height, flightId) {
-      const data = {
-        basse: {
-          causes: [
-            "Loft dynamique réduit à l’impact.",
-            "Balle trop en arrière dans la stance.",
-            "Angle d’attaque trop descendant pour le club utilisé."
-          ],
-          fixes: [
-            "Avancer légèrement la balle dans la stance.",
-            "Laisser un peu plus de loft dynamique à l’impact.",
-            "Vérifier que les mains ne sont pas excessivement en avant."
-          ]
-        },
-        moyenne: {
-          causes: [
-            "Hauteur généralement compatible avec un vol standard.",
-            "Le diagnostic se joue surtout sur la direction de départ et la courbure."
-          ],
-          fixes: [
-            "Prioriser le contrôle face/chemin avant de modifier la hauteur."
-          ]
-        },
-        haute: {
-          causes: [
-            "Loft dynamique élevé ou contact plus sous la balle.",
-            "Balle possiblement trop avancée dans la stance.",
-            "Vitesse ou spin trop élevés selon le club."
-          ],
-          fixes: [
-            "Reculer légèrement la balle si approprié.",
-            "Contrôler le loft dynamique et la qualité de compression.",
-            "Évaluer si le manche ou le loft du club accentue trop la hauteur."
-          ]
-        }
-      };
-
-      const result = JSON.parse(JSON.stringify(data[height]));
-
-      if ([1, 3, 7, 9].includes(flightId)) {
-        result.causes.push("Un effet latéral plus marqué avec cette hauteur peut aussi indiquer un contact décentré.");
-        result.fixes.push("Observer la trace d’impact sur la face pour confirmer le centrage.");
+    function createArrow(endX, endY, leftHanded) {
+      if (!leftHanded) {
+        return `${endX},${endY} ${endX-10},${endY+18} ${endX+14},${endY+9}`;
       }
-
-      return result;
+      return `${endX},${endY} ${endX+10},${endY+18} ${endX-14},${endY+9}`;
     }
 
-    function createArrowPolygon(endX, endY, isLeftHanded = false) {
-      if (!isLeftHanded) {
-        return `${endX},${endY} ${endX - 8},${endY + 16} ${endX + 12},${endY + 8}`;
-      }
-      return `${endX},${endY} ${endX + 8},${endY + 16} ${endX - 12},${endY + 8}`;
-    }
-
-    function renderFlightGraphic() {
+    function renderGraphic() {
       const group = document.getElementById("flightGroup");
       group.innerHTML = "";
 
-      flights.forEach(flight => {
-        const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
+      flights.forEach(f => {
         const isLeft = selectedHand === "gaucher";
 
+        const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
         if (isLeft) {
-          g.setAttribute("transform", "translate(240,0) scale(-1,1)");
+          g.setAttribute("transform", "translate(320,0) scale(-1,1)");
         }
 
         const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-        path.setAttribute(
-          "d",
-          `M ${flight.start[0]} ${flight.start[1]} C ${flight.c1[0]} ${flight.c1[1]}, ${flight.c2[0]} ${flight.c2[1]}, ${flight.end[0]} ${flight.end[1]}`
-        );
-        path.setAttribute("class", "flight-path" + (selectedFlight === flight.id ? " active" : ""));
-        path.setAttribute("stroke", flight.color);
-        path.addEventListener("click", () => {
-          selectedFlight = flight.id;
-          renderAll();
-        });
+        path.setAttribute("d", `M ${f.start[0]} ${f.start[1]} C ${f.c1[0]} ${f.c1[1]}, ${f.c2[0]} ${f.c2[1]}, ${f.end[0]} ${f.end[1]}`);
+        path.setAttribute("class", "path" + (selectedFlight === f.id ? " active" : ""));
+        path.setAttribute("stroke", f.color);
+        path.onclick = () => { selectedFlight = f.id; renderAll(); };
 
         const arrow = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
-        arrow.setAttribute("points", createArrowPolygon(flight.end[0], flight.end[1], isLeft));
-        arrow.setAttribute("class", "flight-arrow" + (selectedFlight === flight.id ? " active" : ""));
-        arrow.setAttribute("fill", flight.color);
-        arrow.addEventListener("click", () => {
-          selectedFlight = flight.id;
-          renderAll();
-        });
+        arrow.setAttribute("class", "arrow");
+        arrow.setAttribute("points", createArrow(f.end[0], f.end[1], isLeft));
+        arrow.setAttribute("fill", f.color);
+        arrow.onclick = () => { selectedFlight = f.id; renderAll(); };
 
         g.appendChild(path);
         g.appendChild(arrow);
         group.appendChild(g);
 
-        const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
-        const x = isLeft ? 240 - flight.textPos[0] : flight.textPos[0];
-        text.setAttribute("x", x);
-        text.setAttribute("y", flight.textPos[1]);
-        text.setAttribute("class", "flight-number" + (selectedFlight === flight.id ? " active" : ""));
-        text.setAttribute("fill", selectedFlight === flight.id ? "#ffffff" : flight.color);
-        text.textContent = flight.id;
-        text.addEventListener("click", () => {
-          selectedFlight = flight.id;
-          renderAll();
-        });
-
-        group.appendChild(text);
+        const num = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        num.setAttribute("class", "num");
+        num.setAttribute("x", isLeft ? 320 - f.textPos[0] : f.textPos[0]);
+        num.setAttribute("y", f.textPos[1]);
+        num.setAttribute("fill", selectedFlight === f.id ? "#ffffff" : f.color);
+        num.textContent = f.id;
+        num.onclick = () => { selectedFlight = f.id; renderAll(); };
+        group.appendChild(num);
       });
     }
 
     function renderFlightList() {
-      const list = document.getElementById("flightList");
-      list.innerHTML = "";
+      const wrap = document.getElementById("flightList");
+      wrap.innerHTML = "";
 
-      flights.forEach(flight => {
-        const button = document.createElement("button");
-        button.textContent = `${flight.id} — ${analysis[selectedHand][flight.id].title}`;
-        if (selectedFlight === flight.id) button.classList.add("active");
-        button.addEventListener("click", () => {
-          selectedFlight = flight.id;
-          renderAll();
-        });
-        list.appendChild(button);
+      flights.forEach(f => {
+        const b = document.createElement("button");
+        b.textContent = `${f.id} — ${data[selectedHand][f.id].title}`;
+        if (selectedFlight === f.id) b.classList.add("active");
+        b.onclick = () => { selectedFlight = f.id; renderAll(); };
+        wrap.appendChild(b);
       });
     }
 
-    function renderButtons() {
-      document.querySelectorAll("#handednessButtons button").forEach(btn => {
+    function renderControls() {
+      document.querySelectorAll("#handButtons button").forEach(btn => {
         btn.classList.toggle("active", btn.dataset.hand === selectedHand);
         btn.onclick = () => {
           selectedHand = btn.dataset.hand;
@@ -637,47 +464,29 @@
       });
     }
 
-    function renderDiagnosis() {
-      const shot = analysis[selectedHand][selectedFlight];
-      const heightData = getHeightAddOn(selectedHeight, selectedFlight);
-
+    function renderDiag() {
+      const shot = data[selectedHand][selectedFlight];
       document.getElementById("shotTitle").textContent = shot.title;
-      document.getElementById("shotDescription").textContent = shot.ballStart;
-      document.getElementById("heightTitle").textContent =
-        selectedHeight.charAt(0).toUpperCase() + selectedHeight.slice(1);
-      document.getElementById("heightDescription").textContent = heightDescriptions[selectedHeight];
+      document.getElementById("shotDesc").textContent = shot.desc;
+      document.getElementById("causeLine").textContent = shot.cause;
+      document.getElementById("fixLine").textContent = shot.fix;
+      document.getElementById("heightLine").textContent = heightInfo[selectedHeight];
 
-      const tagsWrap = document.getElementById("diagnosticTags");
-      tagsWrap.innerHTML = "";
-      shot.tags.forEach(tagText => {
-        const span = document.createElement("span");
-        span.className = "tag";
-        span.textContent = tagText;
-        tagsWrap.appendChild(span);
-      });
-
-      const causesList = document.getElementById("causesList");
-      causesList.innerHTML = "";
-      [...shot.likely, ...heightData.causes].forEach(item => {
-        const li = document.createElement("li");
-        li.textContent = item;
-        causesList.appendChild(li);
-      });
-
-      const fixesList = document.getElementById("fixesList");
-      fixesList.innerHTML = "";
-      [...shot.fixes, ...heightData.fixes].forEach(item => {
-        const li = document.createElement("li");
-        li.textContent = item;
-        fixesList.appendChild(li);
+      const pillRow = document.getElementById("pillRow");
+      pillRow.innerHTML = "";
+      shot.pills.forEach(p => {
+        const el = document.createElement("div");
+        el.className = "pill";
+        el.textContent = p;
+        pillRow.appendChild(el);
       });
     }
 
     function renderAll() {
-      renderButtons();
-      renderFlightGraphic();
+      renderControls();
+      renderGraphic();
       renderFlightList();
-      renderDiagnosis();
+      renderDiag();
     }
 
     renderAll();
