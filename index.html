@@ -6,6 +6,7 @@
   <title>Diagnostic de Ball Flight</title>
   <style>
     * { box-sizing: border-box; }
+
     body {
       margin: 0;
       font-family: Arial, Helvetica, sans-serif;
@@ -14,26 +15,33 @@
     }
 
     .wrap {
-      max-width: 1200px;
+      max-width: 1220px;
       margin: 0 auto;
       padding: 24px;
     }
 
     h1 {
       margin: 0 0 10px;
-      font-size: 2rem;
+      font-size: 2.1rem;
     }
 
     .subtitle {
       color: #cbd5e1;
-      max-width: 850px;
+      max-width: 920px;
       line-height: 1.5;
+      margin-bottom: 10px;
+    }
+
+    .teaching-note {
+      color: #94a3b8;
+      font-size: 0.95rem;
       margin-bottom: 24px;
+      line-height: 1.45;
     }
 
     .grid {
       display: grid;
-      grid-template-columns: 1.4fr 1fr;
+      grid-template-columns: 1.45fr 1fr;
       gap: 24px;
     }
 
@@ -54,11 +62,11 @@
       display: flex;
       flex-wrap: wrap;
       gap: 10px;
-      margin-bottom: 20px;
+      margin-bottom: 18px;
     }
 
     .control-group {
-      margin-bottom: 18px;
+      margin-bottom: 16px;
     }
 
     .label {
@@ -94,7 +102,7 @@
       display: grid;
       grid-template-columns: 1.2fr 0.8fr;
       gap: 18px;
-      align-items: center;
+      align-items: start;
     }
 
     .visual-box {
@@ -112,42 +120,31 @@
 
     .flight-path {
       fill: none;
-      stroke: #fb7185;
       stroke-width: 6;
       stroke-linecap: round;
       cursor: pointer;
       transition: 0.2s ease;
     }
 
-    .flight-path:hover {
-      stroke: #f97316;
-    }
-
     .flight-path.active {
-      stroke: #f97316;
       stroke-width: 8;
+      filter: drop-shadow(0 0 6px rgba(255,255,255,0.15));
     }
 
     .flight-arrow {
-      fill: #fb7185;
       cursor: pointer;
       transition: 0.2s ease;
     }
 
-    .flight-arrow.active {
-      fill: #f97316;
-    }
-
     .flight-number {
-      fill: #94a3b8;
-      font-size: 16px;
+      font-size: 17px;
       font-weight: bold;
       text-anchor: middle;
       cursor: pointer;
     }
 
     .flight-number.active {
-      fill: #f97316;
+      fill: #ffffff;
     }
 
     .flight-list button {
@@ -156,6 +153,7 @@
       margin-bottom: 10px;
       border-radius: 16px;
       padding: 12px 14px;
+      line-height: 1.25;
     }
 
     .note-box {
@@ -173,9 +171,47 @@
     ul {
       padding-left: 20px;
       line-height: 1.5;
+      margin-top: 8px;
     }
 
-    li { margin-bottom: 8px; }
+    li {
+      margin-bottom: 8px;
+    }
+
+    .mini-explainer {
+      background: #111827;
+      border: 1px solid #1f2937;
+      border-radius: 16px;
+      padding: 14px;
+      margin-bottom: 16px;
+    }
+
+    .mini-explainer strong {
+      color: #f8fafc;
+    }
+
+    .diagnostic-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 12px 0 16px;
+    }
+
+    .tag {
+      font-size: 0.85rem;
+      border-radius: 999px;
+      padding: 7px 10px;
+      background: #1e293b;
+      color: #e2e8f0;
+      border: 1px solid #334155;
+    }
+
+    .footer-note {
+      margin-top: 12px;
+      color: #94a3b8;
+      font-size: 0.9rem;
+      line-height: 1.4;
+    }
 
     @media (max-width: 900px) {
       .grid,
@@ -190,6 +226,9 @@
     <h1>Ball Flight Selector</h1>
     <p class="subtitle">
       Sélectionne le vol de balle principal, la hauteur observée et le côté du joueur pour obtenir une explication simple des causes probables et des ajustements possibles.
+    </p>
+    <p class="teaching-note">
+      Rappel pédagogique : la <strong>direction de départ</strong> est principalement liée à la <strong>face</strong>, tandis que la <strong>courbure</strong> est principalement liée à la relation entre <strong>face</strong> et <strong>chemin</strong>.
     </p>
 
     <div class="grid">
@@ -228,10 +267,17 @@
       <div class="card">
         <h2 class="section-title">Diagnostic</h2>
 
+        <div class="mini-explainer">
+          <strong>Lecture rapide :</strong><br>
+          Face = direction de départ dominante.<br>
+          Face vs chemin = sens de la courbure.
+        </div>
+
         <div>
           <div class="label">Vol choisi</div>
           <h3 id="shotTitle">Straight</h3>
           <p id="shotDescription"></p>
+          <div class="diagnostic-tags" id="diagnosticTags"></div>
         </div>
 
         <div class="note-box">
@@ -249,179 +295,201 @@
           <h3>Ce qui pourrait être modifié</h3>
           <ul id="fixesList"></ul>
         </div>
+
+        <p class="footer-note">
+          Ce diagnostic donne les causes les plus probables, mais un contact décentré, le club utilisé, la vitesse, le loft dynamique et le spin peuvent aussi influencer le résultat final.
+        </p>
       </div>
     </div>
   </div>
 
   <script>
     const flights = [
-      { id: 1, label: "Pull Draw", start: [110,250], c1: [85,225], c2: [58,190], end: [28,198], textPos: [15,188] },
-      { id: 2, label: "Pull", start: [110,250], c1: [92,212], c2: [62,160], end: [38,142], textPos: [22,132] },
-      { id: 3, label: "Pull Fade", start: [110,250], c1: [100,210], c2: [88,170], end: [80,120], textPos: [68,112] },
-      { id: 4, label: "Straight Draw", start: [110,250], c1: [118,205], c2: [88,155], end: [70,88], textPos: [58,78] },
-      { id: 5, label: "Straight", start: [110,250], c1: [110,195], c2: [110,135], end: [110,62], textPos: [105,42] },
-      { id: 6, label: "Straight Fade", start: [110,250], c1: [110,205], c2: [138,155], end: [155,88], textPos: [156,78] },
-      { id: 7, label: "Push Draw", start: [110,250], c1: [122,210], c2: [140,170], end: [150,120], textPos: [150,112] },
-      { id: 8, label: "Push", start: [110,250], c1: [130,215], c2: [162,170], end: [188,142], textPos: [198,132] },
-      { id: 9, label: "Push Fade", start: [110,250], c1: [135,215], c2: [192,192], end: [218,198], textPos: [226,188] }
+      { id: 1, label: "Pull Draw", start: [110,250], c1: [96,210], c2: [72,175], end: [42,150], textPos: [32,144], color: "#ff3b30" },
+      { id: 2, label: "Pull", start: [110,250], c1: [100,210], c2: [84,165], end: [72,118], textPos: [66,110], color: "#ff3b30" },
+      { id: 3, label: "Pull Fade", start: [110,250], c1: [103,210], c2: [100,165], end: [102,92], textPos: [98,84], color: "#ff3b30" },
+
+      { id: 4, label: "Straight Draw", start: [110,250], c1: [112,210], c2: [88,168], end: [80,88], textPos: [74,80], color: "#32cd32" },
+      { id: 5, label: "Straight", start: [110,250], c1: [110,205], c2: [110,150], end: [110,72], textPos: [110,64], color: "#32cd32" },
+      { id: 6, label: "Straight Fade", start: [110,250], c1: [108,210], c2: [132,168], end: [140,88], textPos: [146,80], color: "#32cd32" },
+
+      { id: 7, label: "Push Draw", start: [110,250], c1: [118,210], c2: [120,165], end: [118,92], textPos: [126,84], color: "#2f49ff" },
+      { id: 8, label: "Push", start: [110,250], c1: [122,210], c2: [138,165], end: [154,118], textPos: [162,110], color: "#2f49ff" },
+      { id: 9, label: "Push Fade", start: [110,250], c1: [124,210], c2: [150,175], end: [186,150], textPos: [196,144], color: "#2f49ff" }
     ];
 
     const heightDescriptions = {
-      basse: "Trajectoire plus tendue, souvent avec moins de lancement ou trop de shaft lean.",
-      moyenne: "Fenêtre de vol intermédiaire, généralement la plus neutre pour l’analyse.",
-      haute: "Trajectoire plus élevée, souvent liée à plus de loft dynamique ou un contact plus sous la balle."
+      basse: "Trajectoire plus tendue, souvent avec moins de lancement, moins de loft dynamique, ou une balle placée trop arrière.",
+      moyenne: "Fenêtre de vol intermédiaire, généralement la plus neutre pour analyser surtout la direction de départ et la courbure.",
+      haute: "Trajectoire plus élevée, souvent liée à plus de loft dynamique, une balle plus avancée, ou un contact plus sous la balle."
     };
 
     const rightHandedAnalysis = {
       1: {
         title: "Pull Draw",
-        ballStart: "La balle part à gauche de la cible puis revient vers la droite du joueur.",
+        ballStart: "La balle part à gauche de la cible et courbe encore vers la gauche.",
+        tags: ["Face à gauche", "Face fermée au chemin", "Courbure draw/hook"],
         likely: [
-          "Chemin très intérieur-vers-extérieur par rapport à la face.",
-          "Face fermée par rapport à la cible, mais légèrement ouverte par rapport au chemin.",
-          "Alignement du corps trop fermé ou épaules pointant à gauche."
+          "Face orientée à gauche de la cible à l’impact.",
+          "Face fermée par rapport au chemin.",
+          "Chemin plus à droite que la face, mais souvent encore à gauche de la cible."
         ],
         fixes: [
-          "Vérifier l’alignement des épaules et des hanches.",
-          "Neutraliser le grip si les mains ferment trop vite la face.",
-          "Réduire l’exagération du chemin intérieur-vers-extérieur."
+          "Ramener la face un peu moins fermée à l’impact.",
+          "Vérifier si le grip est trop fort.",
+          "Neutraliser légèrement le différentiel face/chemin."
         ]
       },
       2: {
         title: "Pull",
-        ballStart: "La balle part et reste à gauche.",
+        ballStart: "La balle part à gauche et reste assez droite.",
+        tags: ["Face à gauche", "Chemin proche de la face", "Peu de courbure"],
         likely: [
-          "Face orientée à gauche de la cible à l’impact.",
-          "Chemin et face assez similaires, tous deux à gauche.",
-          "Épaules ouvertes ou downswing lancé avec le haut du corps."
+          "Face pointant à gauche de la cible.",
+          "Chemin très proche de la face.",
+          "Épaules ou alignement possiblement trop ouverts."
         ],
         fixes: [
-          "Vérifier l’alignement au départ.",
-          "Stabiliser la face à l’impact.",
-          "Éviter de lancer les épaules trop tôt en transition."
+          "Vérifier l’alignement des pieds, hanches et épaules.",
+          "Ramener face et chemin plus près de la cible.",
+          "Éviter de lancer le haut du corps trop tôt."
         ]
       },
       3: {
         title: "Pull Fade",
-        ballStart: "La balle part à gauche puis coupe vers la droite du joueur.",
+        ballStart: "La balle part à gauche puis courbe vers la droite.",
+        tags: ["Face à gauche", "Face ouverte au chemin", "Courbure fade/slice"],
         likely: [
-          "Chemin extérieur-vers-intérieur avec face légèrement ouverte par rapport au chemin.",
-          "Contact talon possible, surtout si la courbe est marquée.",
-          "Posture ou épaules très ouvertes à l’adresse."
+          "Face orientée à gauche de la cible.",
+          "Face ouverte par rapport au chemin.",
+          "Chemin encore plus à gauche que la face."
         ],
         fixes: [
-          "Travailler un chemin plus neutre.",
-          "Éloigner légèrement la balle du corps si le talon entre trop en jeu.",
-          "Revoir la direction des épaules à l’adresse."
+          "Réduire le chemin extérieur-vers-intérieur.",
+          "Stabiliser la face pour qu’elle ne soit pas trop ouverte au chemin.",
+          "Vérifier la posture et la direction des épaules."
         ]
       },
       4: {
         title: "Straight Draw",
-        ballStart: "La balle part proche de la cible puis tourne légèrement vers la gauche.",
+        ballStart: "La balle part près de la cible puis courbe vers la gauche.",
+        tags: ["Face près de la cible", "Face fermée au chemin", "Draw contrôlé"],
         likely: [
-          "Chemin légèrement intérieur-vers-extérieur.",
-          "Face proche de la cible mais un peu fermée par rapport au chemin.",
-          "Contact centré avec légère fermeture naturelle de la face."
+          "Face proche de la cible à l’impact.",
+          "Face fermée par rapport au chemin.",
+          "Chemin légèrement vers la droite de la face."
         ],
         fixes: [
-          "Très bon vol si c’est intentionnel.",
-          "Pour le rendre plus droit: réduire légèrement la fermeture de la face.",
-          "Conserver le même rythme."
+          "Très bon vol si intentionnel.",
+          "Pour la redresser, réduire légèrement la fermeture de face relative au chemin.",
+          "Conserver le même rythme si c’est ton shot préféré."
         ]
       },
       5: {
         title: "Straight",
         ballStart: "La balle part sur la ligne cible et y reste.",
+        tags: ["Face square", "Chemin neutre", "Vol neutre"],
         likely: [
           "Face square à l’impact.",
-          "Chemin de club neutre ou très proche de la face.",
-          "Bon centrage de balle."
+          "Chemin très proche de la face.",
+          "Bon centrage et bon contrôle du bas du swing."
         ],
         fixes: [
           "Rien de majeur à corriger.",
           "Chercher surtout la répétabilité.",
-          "Surveiller que la hauteur reste adaptée au club utilisé."
+          "Valider que la hauteur et le spin restent adaptés au club."
         ]
       },
       6: {
         title: "Straight Fade",
-        ballStart: "La balle part proche de la cible puis tourne légèrement vers la droite.",
+        ballStart: "La balle part près de la cible puis courbe vers la droite.",
+        tags: ["Face près de la cible", "Face ouverte au chemin", "Fade contrôlée"],
         likely: [
-          "Chemin légèrement extérieur-vers-intérieur.",
-          "Face proche de la cible mais un peu ouverte par rapport au chemin.",
-          "Contact un peu talon possible si la fade est accentuée."
+          "Face proche de la cible à l’impact.",
+          "Face ouverte par rapport au chemin.",
+          "Chemin légèrement plus à gauche que la face."
         ],
         fixes: [
-          "Très bon vol si c’est voulu.",
-          "Pour la redresser: chemin un peu moins à gauche et face un peu moins ouverte au chemin.",
-          "Vérifier la distance à la balle."
+          "Très bon vol si intentionnel.",
+          "Pour la redresser, réduire l’ouverture de face relative au chemin.",
+          "Vérifier aussi le centrage si la fade devient trop marquée."
         ]
       },
       7: {
         title: "Push Draw",
-        ballStart: "La balle part à droite puis revient vers la cible.",
+        ballStart: "La balle part à droite puis revient vers la gauche.",
+        tags: ["Face à droite", "Face fermée au chemin", "Draw de retour"],
         likely: [
-          "Chemin intérieur-vers-extérieur.",
-          "Face orientée à droite de la cible mais fermée par rapport au chemin.",
-          "Corps possiblement trop fermé à l’adresse."
+          "Face orientée à droite de la cible.",
+          "Face fermée par rapport au chemin.",
+          "Chemin encore plus à droite que la face."
         ],
         fixes: [
-          "Ouvrir légèrement l’alignement.",
-          "Rendre la face un peu moins orientée à droite à l’impact.",
-          "Conserver le chemin si ce vol est recherché."
+          "Ramener la face un peu moins à droite à l’impact.",
+          "Réduire l’écart entre face et chemin.",
+          "Vérifier si le corps est trop fermé à l’adresse."
         ]
       },
       8: {
         title: "Push",
-        ballStart: "La balle part et reste à droite.",
+        ballStart: "La balle part à droite et reste assez droite.",
+        tags: ["Face à droite", "Chemin proche de la face", "Peu de courbure"],
         likely: [
-          "Face pointant à droite à l’impact.",
-          "Chemin et face assez similaires, tous deux à droite.",
-          "Blocage des mains ou release tardif."
+          "Face pointant à droite de la cible.",
+          "Chemin très proche de la face.",
+          "Blocage du release ou face laissée ouverte vers la cible."
         ],
         fixes: [
-          "Ramener la face plus square à l’impact.",
-          "Vérifier l’alignement du corps.",
-          "Éviter de retenir le release."
+          "Ramener face et chemin plus près de la cible.",
+          "Vérifier l’alignement général.",
+          "Éviter de retenir les mains à l’impact."
         ]
       },
       9: {
         title: "Push Fade",
-        ballStart: "La balle part à droite et s’éloigne encore plus à droite.",
+        ballStart: "La balle part à droite et courbe encore vers la droite.",
+        tags: ["Face à droite", "Face ouverte au chemin", "Courbure fade/slice"],
         likely: [
-          "Face ouverte à la cible et encore plus ouverte que le chemin.",
-          "Chemin plutôt à droite ou neutre, combiné à une face trop ouverte.",
-          "Contact talon fréquent sur ce type de vol."
+          "Face orientée à droite de la cible.",
+          "Face ouverte par rapport au chemin.",
+          "Chemin un peu moins à droite que la face, ou proche de la cible."
         ],
         fixes: [
-          "Ramener la face moins ouverte.",
-          "Tester une position un peu plus proche pour éviter le talon.",
-          "Vérifier que le grip n’est pas trop faible."
+          "Ramener la face moins ouverte à l’impact.",
+          "Réduire l’écart face/chemin.",
+          "Vérifier le grip et la stabilité de la face au contact."
         ]
       }
     };
 
-    function leftVersion(data) {
+    function swapLeftRight(text) {
+      return text
+        .replaceAll("gauche", "__TMP__")
+        .replaceAll("droite", "gauche")
+        .replaceAll("__TMP__", "droite");
+    }
+
+    function buildLeftHandedAnalysis(data) {
       const remap = { 1: 9, 2: 8, 3: 7, 4: 6, 5: 5, 6: 4, 7: 3, 8: 2, 9: 1 };
       const out = {};
+
       Object.keys(data).forEach(key => {
-        const original = data[key];
+        const item = data[key];
         out[remap[key]] = {
-          title: original.title,
-          ballStart: original.ballStart
-            .replaceAll("gauche", "__TEMP__")
-            .replaceAll("droite", "gauche")
-            .replaceAll("__TEMP__", "droite"),
-          likely: original.likely,
-          fixes: original.fixes
+          title: item.title,
+          ballStart: swapLeftRight(item.ballStart),
+          tags: item.tags.map(swapLeftRight),
+          likely: item.likely.map(swapLeftRight),
+          fixes: item.fixes.map(swapLeftRight)
         };
       });
+
       return out;
     }
 
     const analysis = {
       droitier: rightHandedAnalysis,
-      gaucher: leftVersion(rightHandedAnalysis)
+      gaucher: buildLeftHandedAnalysis(rightHandedAnalysis)
     };
 
     let selectedFlight = 5;
@@ -445,7 +513,7 @@
         moyenne: {
           causes: [
             "Hauteur généralement compatible avec un vol standard.",
-            "Le diagnostic se joue surtout sur la direction de départ et la courbe."
+            "Le diagnostic se joue surtout sur la direction de départ et la courbure."
           ],
           fixes: [
             "Prioriser le contrôle face/chemin avant de modifier la hauteur."
@@ -468,15 +536,18 @@
       const result = JSON.parse(JSON.stringify(data[height]));
 
       if ([1, 3, 7, 9].includes(flightId)) {
-        result.causes.push("Un effet latéral très marqué combiné à cette hauteur peut aussi indiquer un contact décentré.");
+        result.causes.push("Un effet latéral plus marqué avec cette hauteur peut aussi indiquer un contact décentré.");
         result.fixes.push("Observer la trace d’impact sur la face pour confirmer le centrage.");
       }
 
       return result;
     }
 
-    function createArrowPolygon(endX, endY) {
-      return `${endX},${endY} ${endX - 8},${endY + 16} ${endX + 12},${endY + 8}`;
+    function createArrowPolygon(endX, endY, isLeftHanded = false) {
+      if (!isLeftHanded) {
+        return `${endX},${endY} ${endX - 8},${endY + 16} ${endX + 12},${endY + 8}`;
+      }
+      return `${endX},${endY} ${endX + 8},${endY + 16} ${endX - 12},${endY + 8}`;
     }
 
     function renderFlightGraphic() {
@@ -485,22 +556,28 @@
 
       flights.forEach(flight => {
         const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
+        const isLeft = selectedHand === "gaucher";
 
-        if (selectedHand === "gaucher") {
+        if (isLeft) {
           g.setAttribute("transform", "translate(240,0) scale(-1,1)");
         }
 
         const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-        path.setAttribute("d", `M ${flight.start[0]} ${flight.start[1]} C ${flight.c1[0]} ${flight.c1[1]}, ${flight.c2[0]} ${flight.c2[1]}, ${flight.end[0]} ${flight.end[1]}`);
+        path.setAttribute(
+          "d",
+          `M ${flight.start[0]} ${flight.start[1]} C ${flight.c1[0]} ${flight.c1[1]}, ${flight.c2[0]} ${flight.c2[1]}, ${flight.end[0]} ${flight.end[1]}`
+        );
         path.setAttribute("class", "flight-path" + (selectedFlight === flight.id ? " active" : ""));
+        path.setAttribute("stroke", flight.color);
         path.addEventListener("click", () => {
           selectedFlight = flight.id;
           renderAll();
         });
 
         const arrow = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
-        arrow.setAttribute("points", createArrowPolygon(flight.end[0], flight.end[1]));
+        arrow.setAttribute("points", createArrowPolygon(flight.end[0], flight.end[1], isLeft));
         arrow.setAttribute("class", "flight-arrow" + (selectedFlight === flight.id ? " active" : ""));
+        arrow.setAttribute("fill", flight.color);
         arrow.addEventListener("click", () => {
           selectedFlight = flight.id;
           renderAll();
@@ -511,10 +588,11 @@
         group.appendChild(g);
 
         const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
-        const x = selectedHand === "gaucher" ? 240 - flight.textPos[0] : flight.textPos[0];
+        const x = isLeft ? 240 - flight.textPos[0] : flight.textPos[0];
         text.setAttribute("x", x);
         text.setAttribute("y", flight.textPos[1]);
         text.setAttribute("class", "flight-number" + (selectedFlight === flight.id ? " active" : ""));
+        text.setAttribute("fill", selectedFlight === flight.id ? "#ffffff" : flight.color);
         text.textContent = flight.id;
         text.addEventListener("click", () => {
           selectedFlight = flight.id;
@@ -568,6 +646,15 @@
       document.getElementById("heightTitle").textContent =
         selectedHeight.charAt(0).toUpperCase() + selectedHeight.slice(1);
       document.getElementById("heightDescription").textContent = heightDescriptions[selectedHeight];
+
+      const tagsWrap = document.getElementById("diagnosticTags");
+      tagsWrap.innerHTML = "";
+      shot.tags.forEach(tagText => {
+        const span = document.createElement("span");
+        span.className = "tag";
+        span.textContent = tagText;
+        tagsWrap.appendChild(span);
+      });
 
       const causesList = document.getElementById("causesList");
       causesList.innerHTML = "";
