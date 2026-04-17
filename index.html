@@ -10,12 +10,12 @@
     body {
       margin: 0;
       font-family: Arial, Helvetica, sans-serif;
-      background: #030b1a;
-      color: #eaf1ff;
+      background: #03112b;
+      color: #eef4ff;
     }
 
     .wrap {
-      max-width: 1280px;
+      max-width: 1250px;
       margin: 0 auto;
       padding: 24px;
     }
@@ -27,52 +27,51 @@
 
     .subtitle {
       margin: 0 0 24px;
-      color: #a9b8d3;
-      font-size: 1rem;
+      color: #9eb0d0;
       line-height: 1.45;
     }
 
     .layout {
       display: grid;
-      grid-template-columns: 1.15fr 0.85fr;
+      grid-template-columns: 1.05fr 0.95fr;
       gap: 24px;
     }
 
     .card {
-      background: #08152d;
-      border: 1px solid #1b2b4b;
+      background: #07162f;
+      border: 1px solid #183058;
       border-radius: 24px;
       padding: 20px;
     }
 
     .label {
-      font-size: 0.8rem;
+      font-size: 0.78rem;
       text-transform: uppercase;
-      letter-spacing: 0.12em;
-      color: #8ea2c7;
+      letter-spacing: 0.14em;
+      color: #8da2c9;
       margin-bottom: 10px;
     }
 
     .controls {
       display: flex;
-      gap: 10px;
       flex-wrap: wrap;
-      margin-bottom: 20px;
+      gap: 10px;
+      margin-bottom: 18px;
     }
 
     button {
-      border: 1px solid #2c4068;
-      background: #071224;
+      border: 1px solid #2f4773;
+      background: #061224;
       color: #eef4ff;
-      padding: 10px 16px;
+      padding: 10px 15px;
       border-radius: 14px;
       cursor: pointer;
       font-size: 1rem;
-      transition: 0.2s ease;
+      transition: 0.18s ease;
     }
 
     button:hover {
-      background: #0c1b33;
+      background: #0a1930;
     }
 
     button.active {
@@ -81,29 +80,29 @@
       color: white;
     }
 
-    .left-grid {
+    .left-side {
       display: grid;
-      grid-template-columns: 1fr 0.7fr;
+      grid-template-columns: 1fr 0.62fr;
       gap: 18px;
       align-items: start;
     }
 
     .visual-box {
       background: #000;
-      border-radius: 24px;
-      padding: 16px;
-      border: 1px solid #162541;
-      min-height: 560px;
+      border: 1px solid #162746;
+      border-radius: 26px;
+      min-height: 700px;
       display: flex;
       align-items: center;
       justify-content: center;
+      padding: 18px;
     }
 
     svg {
       width: 100%;
       height: auto;
       display: block;
-      max-height: 520px;
+      max-height: 650px;
     }
 
     .flight-list button {
@@ -117,15 +116,15 @@
 
     .path {
       fill: none;
-      stroke-width: 8;
+      stroke-width: 5;
       stroke-linecap: round;
       cursor: pointer;
-      transition: 0.2s ease;
+      transition: 0.18s ease;
     }
 
     .path.active {
-      stroke-width: 11;
-      filter: drop-shadow(0 0 8px rgba(255,255,255,0.15));
+      stroke-width: 7;
+      filter: drop-shadow(0 0 5px rgba(255,255,255,0.18));
     }
 
     .arrow {
@@ -134,17 +133,9 @@
 
     .num {
       font-weight: bold;
-      font-size: 22px;
+      font-size: 18px;
       text-anchor: middle;
       cursor: pointer;
-    }
-
-    .mini-card {
-      background: #041022;
-      border: 1px solid #1a2a49;
-      border-radius: 20px;
-      padding: 16px;
-      margin-bottom: 16px;
     }
 
     .shot-title {
@@ -153,9 +144,9 @@
       margin: 0 0 10px;
     }
 
-    .shot-sub {
+    .shot-desc {
       font-size: 1.1rem;
-      color: #c9d7f0;
+      color: #d6e0f3;
       line-height: 1.4;
       margin-bottom: 14px;
     }
@@ -164,31 +155,34 @@
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
-      margin-bottom: 8px;
+      margin-bottom: 18px;
     }
 
     .pill {
       background: #1a2742;
-      border: 1px solid #31456f;
+      border: 1px solid #30456e;
       color: #eef4ff;
       border-radius: 999px;
       padding: 8px 12px;
-      font-size: 0.95rem;
+      font-size: 0.94rem;
     }
 
-    .big-line {
-      font-size: 1.2rem;
-      line-height: 1.45;
+    .mini-card {
+      background: #041022;
+      border: 1px solid #1a2a49;
+      border-radius: 18px;
+      padding: 15px;
+      margin-bottom: 14px;
+    }
+
+    .mini-card p {
       margin: 0;
+      font-size: 1.12rem;
+      line-height: 1.4;
     }
 
-    .accent {
-      color: #ffb16a;
-      font-weight: 700;
-    }
-
-    .small-note {
-      color: #90a4c9;
+    .note {
+      color: #8ea2c9;
       font-size: 0.95rem;
       line-height: 1.45;
       margin-top: 12px;
@@ -196,12 +190,12 @@
 
     @media (max-width: 980px) {
       .layout,
-      .left-grid {
+      .left-side {
         grid-template-columns: 1fr;
       }
 
       .visual-box {
-        min-height: 420px;
+        min-height: 460px;
       }
     }
   </style>
@@ -209,7 +203,7 @@
 <body>
   <div class="wrap">
     <h1>Ball Flight Selector</h1>
-    <p class="subtitle">Choisis le vol de balle, la hauteur et le côté du joueur. Le diagnostic reste volontairement court et lisible.</p>
+    <p class="subtitle">Version simplifiée, avec un visuel beaucoup plus proche d’un vrai schéma de ball flights.</p>
 
     <div class="layout">
       <div class="card">
@@ -226,11 +220,11 @@
           <button data-height="haute">Haute</button>
         </div>
 
-        <div class="left-grid">
+        <div class="left-side">
           <div class="visual-box">
-            <svg viewBox="0 0 320 420">
+            <svg viewBox="0 0 340 520">
               <g id="flightGroup"></g>
-              <circle cx="160" cy="350" r="7" fill="#f5f7ff"></circle>
+              <circle cx="170" cy="450" r="6.5" fill="#f4f7ff"></circle>
             </svg>
           </div>
 
@@ -241,28 +235,27 @@
       <div class="card">
         <div class="label">Vol choisi</div>
         <div class="shot-title" id="shotTitle">Straight</div>
-        <div class="shot-sub" id="shotDesc">La balle part sur la cible et reste neutre.</div>
+        <div class="shot-desc" id="shotDesc">La balle part sur la cible et reste neutre.</div>
 
         <div class="pill-row" id="pillRow"></div>
 
         <div class="mini-card">
           <div class="label">Cause probable</div>
-          <p class="big-line" id="causeLine"></p>
+          <p id="causeLine"></p>
         </div>
 
         <div class="mini-card">
           <div class="label">Ajustement clé</div>
-          <p class="big-line" id="fixLine"></p>
+          <p id="fixLine"></p>
         </div>
 
         <div class="mini-card">
           <div class="label">Hauteur</div>
-          <p class="big-line" id="heightLine"></p>
+          <p id="heightLine"></p>
         </div>
 
-        <p class="small-note">
-          Raccourci utile : <span class="accent">la face influence surtout le départ</span>,
-          et <span class="accent">la relation face/chemin influence surtout la courbure</span>.
+        <p class="note">
+          Raccourci utile : la face influence surtout le départ. La relation face/chemin influence surtout la courbure.
         </p>
       </div>
     </div>
@@ -270,17 +263,20 @@
 
   <script>
     const flights = [
-      { id: 1, label: "Pull Draw", start: [160,350], c1: [138,300], c2: [102,250], end: [58,212], textPos: [42,204], color: "#ff3b30" },
-      { id: 2, label: "Pull", start: [160,350], c1: [144,298], c2: [120,242], end: [94,160], textPos: [84,148], color: "#ff3b30" },
-      { id: 3, label: "Pull Fade", start: [160,350], c1: [150,298], c2: [145,238], end: [152,112], textPos: [144,98], color: "#ff3b30" },
+      // Rouge gauche
+      { id: 1, label: "Pull Draw", start: [170,450], c1: [150,392], c2: [92,305], end: [44,226], textPos: [32,214], color: "#ff3b30" },
+      { id: 2, label: "Pull", start: [170,450], c1: [156,388], c2: [122,286], end: [92,164], textPos: [82,150], color: "#ff3b30" },
+      { id: 3, label: "Pull Fade", start: [170,450], c1: [165,382], c2: [162,278], end: [160,116], textPos: [152,102], color: "#ff3b30" },
 
-      { id: 4, label: "Straight Draw", start: [160,350], c1: [162,300], c2: [128,242], end: [112,108], textPos: [102,92], color: "#31d843" },
-      { id: 5, label: "Straight", start: [160,350], c1: [160,295], c2: [160,225], end: [160,82], textPos: [160,64], color: "#31d843" },
-      { id: 6, label: "Straight Fade", start: [160,350], c1: [158,300], c2: [192,242], end: [208,108], textPos: [218,92], color: "#31d843" },
+      // Vert centre
+      { id: 4, label: "Straight Draw", start: [170,450], c1: [176,388], c2: [132,286], end: [120,118], textPos: [110,102], color: "#31d843" },
+      { id: 5, label: "Straight", start: [170,450], c1: [170,390], c2: [170,285], end: [170,86], textPos: [170,68], color: "#31d843" },
+      { id: 6, label: "Straight Fade", start: [170,450], c1: [164,388], c2: [208,286], end: [220,118], textPos: [230,102], color: "#31d843" },
 
-      { id: 7, label: "Push Draw", start: [160,350], c1: [172,298], c2: [175,238], end: [168,112], textPos: [178,98], color: "#304cff" },
-      { id: 8, label: "Push", start: [160,350], c1: [176,298], c2: [200,242], end: [226,160], textPos: [236,148], color: "#304cff" },
-      { id: 9, label: "Push Fade", start: [160,350], c1: [182,300], c2: [218,250], end: [262,212], textPos: [278,204], color: "#304cff" }
+      // Bleu droite
+      { id: 7, label: "Push Draw", start: [170,450], c1: [175,382], c2: [178,278], end: [180,116], textPos: [188,102], color: "#304cff" },
+      { id: 8, label: "Push", start: [170,450], c1: [184,388], c2: [218,286], end: [248,164], textPos: [260,150], color: "#304cff" },
+      { id: 9, label: "Push Fade", start: [170,450], c1: [190,392], c2: [248,305], end: [296,226], textPos: [308,214], color: "#304cff" }
     ];
 
     const dataRight = {
@@ -389,9 +385,9 @@
 
     function createArrow(endX, endY, leftHanded) {
       if (!leftHanded) {
-        return `${endX},${endY} ${endX-10},${endY+18} ${endX+14},${endY+9}`;
+        return `${endX},${endY} ${endX-8},${endY+16} ${endX+10},${endY+8}`;
       }
-      return `${endX},${endY} ${endX+10},${endY+18} ${endX-14},${endY+9}`;
+      return `${endX},${endY} ${endX+8},${endY+16} ${endX-10},${endY+8}`;
     }
 
     function renderGraphic() {
@@ -403,7 +399,7 @@
 
         const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
         if (isLeft) {
-          g.setAttribute("transform", "translate(320,0) scale(-1,1)");
+          g.setAttribute("transform", "translate(340,0) scale(-1,1)");
         }
 
         const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
@@ -424,7 +420,7 @@
 
         const num = document.createElementNS("http://www.w3.org/2000/svg", "text");
         num.setAttribute("class", "num");
-        num.setAttribute("x", isLeft ? 320 - f.textPos[0] : f.textPos[0]);
+        num.setAttribute("x", isLeft ? 340 - f.textPos[0] : f.textPos[0]);
         num.setAttribute("y", f.textPos[1]);
         num.setAttribute("fill", selectedFlight === f.id ? "#ffffff" : f.color);
         num.textContent = f.id;
